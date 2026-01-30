@@ -1,0 +1,32 @@
+
+server:
+  port: 8083
+
+spring:
+  application:
+    name: ai-service
+
+  data:
+    mongodb:
+      uri: "mongodb+srv://abhishekmali7710_db_user:mummy123abhi@abhi01cluster.zbdjysk.mongodb.net/fitnessrecommendation?retryWrites=true&w=majority"
+      database: fitnessrecommendation
+
+    rabbitmq:
+      host: localhost
+      port: 5672
+      usrname: guest
+      password: guest
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+rabbitmq:
+  exchange:
+    name: fitness.exchange
+  queue:
+    name: activity.queue
+  routing:
+    key: activity.tracking
