@@ -1,4 +1,3 @@
-
 server:
   port: 8083
 
@@ -14,14 +13,16 @@ spring:
     rabbitmq:
       host: localhost
       port: 5672
-      usrname: guest
+      username: guest
       password: guest
-
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
 
 rabbitmq:
   exchange:
@@ -31,8 +32,8 @@ rabbitmq:
   routing:
     key: activity.tracking
 
-
 gemini:
   api:
-    url: ${GEMINI_API_URL}
-    key: ${GEMINI_API_KEY}
+    url: ${GEMINI_API_URL:https://openrouter.ai/api/v1/chat/completions}
+    key: ${GEMINI_API_KEY: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}
+    model: ${GEMINI_API_MODEL:google/gemma-3n-e2b-it:free}
