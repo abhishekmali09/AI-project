@@ -10,8 +10,9 @@ spring:
     rabbitmq:
       host: localhost
       port: 5672
-      usrname: guest
+      username: guest
       password: guest
+
 server:
   port: 8082
 
@@ -19,6 +20,9 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
 
 rabbitmq:
   exchange:
@@ -26,4 +30,4 @@ rabbitmq:
   queue:
     name: activity.queue
   routing:
-   key: activity.tracking
+    key: activity.tracking
