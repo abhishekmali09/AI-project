@@ -1,6 +1,10 @@
 package com.abhi.aiservice.servirce;
 
+import com.abhi.aiservice.dto.ActivityAIResponse;
+import com.abhi.aiservice.mapper.RecommendationMapper;
 import com.abhi.aiservice.modle.Activity;
+import com.abhi.aiservice.modle.Recommendation;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,14 +15,47 @@ import org.springframework.stereotype.Service;
 public class ActivityAIService {
 
     private final GeminiService geminiService;
+    private final RecommendationMapper recommendationMapper;
+    private final ObjectMapper objectMapper;
 
-    public String generateRecommedation(Activity activity){
-        String prompt =createPromptForActivity(activity);
+    /**
+     * Generates recommendation by calling AI and mapping the response to the domain model.
+     */
+    public Recommendation generateRecommedation(Activity activity) {
+        String prompt = createPromptForActivity(activity);
         String aiResponse = geminiService.getAnswer(prompt);
+        log.info("RESPONSE FROM AI: {}", aiResponse);
 
-        log .info("RESPONSE FROM AI:{} ", aiResponse);
-        return aiResponse;
+        return parseAndMapToRecommendation(activity, aiResponse);
     }
+
+    /**
+     * Parses raw AI response (handles markdown-wrapped JSON) and maps to Recommendation.
+     */
+    public Recommendation parseAndMapToRecommendation(Activity activity, String aiResponse) {
+        String jsonContent = extractJsonContent(aiResponse);
+        ActivityAIResponse dto = parseAiResponse(jsonContent);
+        return recommendationMapper.toRecommendation(activity, dto);
+    }
+
+    private String extractJsonContent(String raw) {
+        if (raw == null) return "{}";
+        return raw
+                .replaceAll("(?s)^\\s*```(?:json)?\\s*", "")
+                .replaceAll("(?s)\\s*```\\s*$", "")
+                .trim();
+    }
+
+    private ActivityAIResponse parseAiResponse(String jsonContent) {
+        try {
+            return objectMapper.readValue(jsonContent, ActivityAIResponse.class);
+        } catch (Exception e) {
+            log.error("Failed to parse AI response as JSON", e);
+            throw new IllegalArgumentException("Invalid AI response: " + e.getMessage(), e);
+        }
+    }
+
+
 
     private String createPromptForActivity(Activity activity) {
         return String.format("""
