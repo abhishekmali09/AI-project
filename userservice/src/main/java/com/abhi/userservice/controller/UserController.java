@@ -26,10 +26,12 @@ public class UserController {
 }
 
     @GetMapping("/{userId}/validate")
-    public ResponseEntity<Boolean> validateUser(@PathVariable long userId) {
+    public ResponseEntity<Boolean> validateUser(@PathVariable Long userId) {
         return ResponseEntity.ok(userService.existByUserId(userId));
     }
 
-
-
+    @GetMapping("/by-keycloak/{keycloakId}/validate")
+    public ResponseEntity<Boolean> validateUserByKeycloakId(@PathVariable String keycloakId) {
+        return ResponseEntity.ok(userService.existByKeycloakId(keycloakId));
+    }
 }

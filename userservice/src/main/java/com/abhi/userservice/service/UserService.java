@@ -17,18 +17,32 @@ public class UserService {
 
     public UserResponse register( RegisterRequest request) {
 
-        if (repository.existsByEmail(request.getEmail()))
-            throw new RuntimeException("Email already exists");
+        if (repository.existsByEmail(request.getEmail())) {
+            User existingUser = repository.findByEmail(request.getEmail());
+            UserResponse userResponse = new UserResponse();
+            userResponse.setId(existingUser.getId());
+            userResponse.setKeycloakId(existingUser.getKeycloakId());
+            userResponse.setEmail(existingUser.getEmail());
+            userResponse.setPassword(existingUser.getPassword());
+            userResponse.setFirstName(existingUser.getFirstName());
+            userResponse.setLastName(existingUser.getLastName());
+            userResponse.setCreatedAt(existingUser.getCreatedAt());
+            userResponse.setUpdatedAt(existingUser.getUpdatedAt());
+            return userResponse;
+        }
+
          User user = new User();
          user.setEmail(request.getEmail());
          user.setPassword(request.getPassword());
+         user.setKeycloakId(request.getKeycloakId());
          user.setFirstName(request.getFirstName());
          user.setLastName(request.getLastName());
 
          User savedUser = repository.save(user);
          UserResponse userResponse = new UserResponse();
          userResponse.setId(savedUser.getId());
-         userResponse.setEmail(savedUser.getEmail());
+        userResponse.setKeycloakId(savedUser.getKeycloakId());
+        userResponse.setEmail(savedUser.getEmail());
          userResponse.setPassword(savedUser.getPassword());
          userResponse.setFirstName(savedUser.getFirstName());
          userResponse.setLastName(savedUser.getLastName());
@@ -54,8 +68,13 @@ public class UserService {
         return userResponse;
     }
 
-    public Boolean existByUserId(long userId) {
-        log.info("Calling User Validation APL for userId: " + userId);
+    public Boolean existByUserId(Long userId) {
+        log.info("Calling User Validation API for userId: " + userId);
         return repository.existsById(userId);
+    }
+
+    public Boolean existByKeycloakId(String keycloakId) {
+        log.info("Calling User Validation API for keycloakId: " + keycloakId);
+        return repository.existsByKeycloakId(keycloakId);
     }
 }
