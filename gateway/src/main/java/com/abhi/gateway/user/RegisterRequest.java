@@ -1,4 +1,4 @@
-package com.abhi.userservice.dto;
+package com.abhi.gateway.user;
 
 
 import jakarta.validation.constraints.Email;

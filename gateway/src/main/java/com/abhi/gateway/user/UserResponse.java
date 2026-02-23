@@ -1,4 +1,4 @@
-package com.abhi.userservice.dto;
+package com.abhi.gateway.user;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class UserResponse {
 
-    private Long id;
+    private String id;
     private String keycloakId;
     private String email;
     private String password;
