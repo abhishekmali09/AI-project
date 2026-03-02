@@ -1,10 +1,23 @@
-import { Button } from "@mui/material";
+import React from "react";
+import { Box,Button } from "@mui/material";
 import { useContext } from "react";
 import { BrowserRouter as Router,Navigate, Route,Routes,useLocation} from "react-router";
 import { useEffect, useState } from "react";
 import { AuthContext } from "react-oauth2-code-pkce";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "./store/authSlice";
+import ActivityForm from "./components/ActivityForm";
+import ActivityList from "./components/ActivityList";
+import ActivityDetail from "./components/ActivityDetail";
+
+const ActivityPage = () => {
+ return(   <Box component="section" sx={{p:2, border: '1px solid grey'}}>
+        <ActivityForm  onActivitiesAdded={() => window.location.reload()}/>
+       <ActivityList />
+    </Box>)
+}
+
+
 function App() {
   const {token,tokenData , logIn,logOut, isAuthenticated} = useContext(AuthContext);
   const dispatch = useDispatch();
@@ -15,7 +28,7 @@ function App() {
     setAuthReady(true);
     } 
   },[token,tokenData,dispatch]);
-return(
+return (
   <Router>
     {!token ?(
 
@@ -24,13 +37,23 @@ return(
                logIn();
             }}>LOGIN </Button>
           ): (
-            <div>
-              <pre>{JSON.stringify(tokenData, null, 2)}</pre>
-              <Button variant="contained" color="#dcc004e"
-                      onClick={() => {
-                        logOut();
-                      }}>LOGOUT </Button>
-            </div>
+            // <div>
+            //   <pre>{JSON.stringify(tokenData, null, 2)}</pre>
+            //   <pre> {JSON.stringify(token, null, 2)}</pre>
+            //   <Button variant="contained" color="#dcc004e"
+            //           onClick={() => {
+            //             logOut();
+            //           }}>LOGOUT </Button>
+            // </div>
+            <Box component="section" sx={{ p: 2, border: '1px solid grey' }}>
+              <Routes>
+                <Route path="/activities" element={<ActivityPage />} />
+                <Route path="/activities/:id" element={<ActivityDetail />} />
+              
+              <Route path="*" element={token ? <Navigate to="/activities" replace /> : <div>Welcome! Please log in.</div>} />
+              
+              </Routes>
+            </Box>
           )}
 
   </Router>
