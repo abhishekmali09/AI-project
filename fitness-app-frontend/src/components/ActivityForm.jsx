@@ -2,12 +2,12 @@ import { FormControl } from '@mui/material';
 import React from 'react'
 import { useState } from 'react';
 import { Box, Button, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { addActivity } from '../services/api';
 
 
 
 
-
-const ActivityForm = ( onActivitiesAdded) => {
+const ActivityForm = ({ onActivitiesAdded }) => {
 
   const [activity, setActivity] = useState({
     type: "RUNNING",
@@ -17,9 +17,16 @@ const ActivityForm = ( onActivitiesAdded) => {
   });
 
   const handleSubmit = async(event) => {
-  event.preventDefault();
+event.preventDefault();
   try {
-    await addActivity({ activity });
+    const userId = localStorage.getItem('userId');
+    await addActivity({
+      ...activity,
+      userId: userId || null,
+      duration: Number(activity.duration),
+      caloriesBurned: Number(activity.caloriesBurned),
+      startTime: new Date().toISOString().slice(0, -1)
+    });
     onActivitiesAdded();
     setActivity({ type: "RUNNING", duration: '', caloriesBurned: '' });
 }

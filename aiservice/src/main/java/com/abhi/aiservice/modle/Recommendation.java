@@ -23,7 +23,7 @@ public class Recommendation {
     @Id
     private String id;
     private String activityId;
-    private Long userId;
+    private String userId;
     private String activityType;
 
     private String recommendation;
