@@ -14,7 +14,7 @@ import java.util.List;
 public class RecommendationService {
     private final RecommendationRepository recommendationRepository;
 
-    public List<Recommendation> getUserRecommendtion(Long userId) {
+    public List<Recommendation> getUserRecommendtion(String userId) {
       return recommendationRepository.findByUserId(userId);
     }
 

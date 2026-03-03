@@ -75,7 +75,7 @@ public class ActivityService {
 
     }
 
-     public List<ActivityResponse> getUserActivities(Long userId) {
+     public List<ActivityResponse> getUserActivities(String userId) {
 
          List<Activity> activities= activityRepository.findByUserId(userId);
        return activities.stream()

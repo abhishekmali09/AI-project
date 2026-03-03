@@ -14,11 +14,11 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 public class UserValidationService {
     private final WebClient userServiceWebClient;
 
-    public boolean validateUser(Long userId) {
-        log.info("Calling User Validation API for userId: " + userId);
+    public boolean validateUser(String userId) {
+        log.info("Calling User Validation API for keycloakId: " + userId);
         try{
             return Boolean.TRUE.equals(userServiceWebClient.get()
-                    .uri("/api/users/{userId}/validate", userId)
+                    .uri("/api/users/by-keycloak/{keycloakId}/validate", userId)
                     .retrieve()
                     .bodyToMono(Boolean.class)
                     .block());
@@ -26,9 +26,9 @@ public class UserValidationService {
         }catch (WebClientResponseException e){
 
             if (e.getStatusCode() == HttpStatus.NOT_FOUND)
-                throw new RuntimeException("User not found: " + userId);
+                throw new RuntimeException("User not found with keycloakId: " + userId);
             else if (e.getStatusCode() == HttpStatus.BAD_REQUEST)
-                throw new RuntimeException("Invalid Request: " + userId);
+                throw new RuntimeException("Invalid Request for keycloakId: " + userId);
         }
 
         return false;
