@@ -1,64 +1,76 @@
-import React from "react";
-import { Box,Button } from "@mui/material";
-import { useContext } from "react";
-import { BrowserRouter as Router,Navigate, Route,Routes,useLocation} from "react-router";
-import { useEffect, useState } from "react";
-import { AuthContext } from "react-oauth2-code-pkce";
-import { useDispatch } from "react-redux";
-import { setCredentials } from "./store/authSlice";
-import ActivityForm from "./components/ActivityForm";
-import ActivityList from "./components/ActivityList";
-import ActivityDetail from "./components/ActivityDetail";
+import React, { useContext, useEffect, useState } from 'react';
+import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router';
+import { AuthContext } from 'react-oauth2-code-pkce';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from './store/authSlice';
+import { AnimatePresence } from 'framer-motion';
 
-const ActivityPage = () => {
- return(   <Box component="section" sx={{p:2, border: '1px solid grey'}}>
-        <ActivityForm  onActivitiesAdded={() => window.location.reload()}/>
-       <ActivityList />
-    </Box>)
-}
+import AppLayout from './components/layout/AppLayout';
+import LandingPage from './pages/LandingPage';
+import Dashboard from './pages/Dashboard';
+import ActivityTracker from './pages/ActivityTracker';
+import ActivityDetail from './pages/ActivityDetail';
+import Statistics from './pages/Statistics';
+import AISuggestions from './pages/AISuggestions';
+import FoodAnalyzer from './pages/FoodAnalyzer';
+import Profile from './pages/Profile';
+import LoadingSpinner from './components/ui/LoadingSpinner';
 
+const ProtectedRoute = ({ children }) => {
+  const { token } = useContext(AuthContext);
+  if (!token) return <Navigate to="/" replace />;
+  return children;
+};
 
 function App() {
-  const {token,tokenData , logIn,logOut, isAuthenticated} = useContext(AuthContext);
+  const { token, tokenData } = useContext(AuthContext);
   const dispatch = useDispatch();
-  const[authReady,setAuthReady]= useState(false);
-  useEffect(()=> {
-   if (token){
-     dispatch(setCredentials({token,user: tokenData}));
-    setAuthReady(true);
-    } 
-  },[token,tokenData,dispatch]);
-return (
-  <Router>
-    {!token ?(
+  const [authReady, setAuthReady] = useState(false);
 
-    <Button variant="contained" color="#dcc004e"
-            onClick={() => {
-               logIn();
-            }}>LOGIN </Button>
-          ): (
-            // <div>
-            //   <pre>{JSON.stringify(tokenData, null, 2)}</pre>
-            //   <pre> {JSON.stringify(token, null, 2)}</pre>
-            //   <Button variant="contained" color="#dcc004e"
-            //           onClick={() => {
-            //             logOut();
-            //           }}>LOGOUT </Button>
-            // </div>
-            <Box component="section" sx={{ p: 2, border: '1px solid grey' }}>
-              <Routes>
-                <Route path="/activities" element={<ActivityPage />} />
-                <Route path="/activities/:id" element={<ActivityDetail />} />
-              
-              <Route path="*" element={token ? <Navigate to="/activities" replace /> : <div>Welcome! Please log in.</div>} />
-              
-              </Routes>
-            </Box>
-          )}
+  useEffect(() => {
+    if (token && tokenData) {
+      dispatch(setCredentials({ token, user: tokenData }));
+      setAuthReady(true);
+    }
+  }, [token, tokenData, dispatch]);
 
-  </Router>
-)
+  return (
+    <Router>
+      <AnimatePresence mode="wait">
+        <Routes>
+          {/* Public */}
+          <Route
+            path="/"
+            element={token ? <Navigate to="/dashboard" replace /> : <LandingPage />}
+          />
 
+          {/* Authenticated routes */}
+          <Route
+            element={
+              <ProtectedRoute>
+                {authReady ? <AppLayout /> : (
+                  <div className="min-h-screen gradient-bg flex items-center justify-center">
+                    <LoadingSpinner size="lg" />
+                  </div>
+                )}
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/activities" element={<ActivityTracker />} />
+            <Route path="/activities/:id" element={<ActivityDetail />} />
+            <Route path="/statistics" element={<Statistics />} />
+            <Route path="/ai-suggestions" element={<AISuggestions />} />
+            <Route path="/food-analyzer" element={<FoodAnalyzer />} />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+
+          {/* Catch-all */}
+          <Route path="*" element={<Navigate to={token ? '/dashboard' : '/'} replace />} />
+        </Routes>
+      </AnimatePresence>
+    </Router>
+  );
 }
 
-export default App
+export default App;
