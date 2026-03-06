@@ -12,6 +12,7 @@ import ActivityTracker from './pages/ActivityTracker';
 import ActivityDetail from './pages/ActivityDetail';
 import Statistics from './pages/Statistics';
 import AISuggestions from './pages/AISuggestions';
+import FoodAnalyzer from './pages/FoodAnalyzer';
 import Profile from './pages/Profile';
 import LoadingSpinner from './components/ui/LoadingSpinner';
 
@@ -60,6 +61,7 @@ function App() {
             <Route path="/activities/:id" element={<ActivityDetail />} />
             <Route path="/statistics" element={<Statistics />} />
             <Route path="/ai-suggestions" element={<AISuggestions />} />
+            <Route path="/food-analyzer" element={<FoodAnalyzer />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
 

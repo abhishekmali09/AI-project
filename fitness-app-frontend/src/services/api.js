@@ -21,6 +21,15 @@ export const getActivityById = (id) => api.get(`/activities/${id}`);
 export const getActivityRecommendation = (activityId) => api.get(`/recommendation/activity/${activityId}`);
 export const getUserRecommendations = (userId) => api.get(`/recommendation/user/${userId}`);
 
+// Food Analysis
+export const analyzeFoodImage = (imageFile) => {
+  const formData = new FormData();
+  formData.append('image', imageFile);
+  return api.post('/ai/analyze-food-image', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+};
+
 // User Service
 export const getUserProfile = (userId) => api.get(`/users/${userId}`);
 export const registerUser = (data) => api.post('/users/register', data);

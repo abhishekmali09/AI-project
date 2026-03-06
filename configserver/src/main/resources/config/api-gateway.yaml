@@ -29,6 +29,11 @@ spring:
           predicates:
             - Path=/api/recommendation/**
 
+        - id: ai-food-analysis
+          uri: lb://AI-SERVICE
+          predicates:
+            - Path=/api/ai/**
+
 server:
   port: 8080
 

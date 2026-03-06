@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AuthContext } from 'react-oauth2-code-pkce';
 import {
   FiHome, FiActivity, FiBarChart2, FiCpu, FiUser,
-  FiLogOut, FiMenu, FiX, FiZap
+  FiLogOut, FiMenu, FiX, FiZap, FiCamera
 } from 'react-icons/fi';
 
 const navItems = [
@@ -12,6 +12,7 @@ const navItems = [
   { path: '/activities', label: 'Activities', icon: FiActivity },
   { path: '/statistics', label: 'Statistics', icon: FiBarChart2 },
   { path: '/ai-suggestions', label: 'AI Coach', icon: FiCpu },
+  { path: '/food-analyzer', label: 'Food Analyzer', icon: FiCamera },
   { path: '/profile', label: 'Profile', icon: FiUser },
 ];
 
